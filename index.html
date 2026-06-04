@@ -3,72 +3,396 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bird Training Schedule</title>
+<title>Feathergraph Trainer — Singles & Pairs</title>
 
 <style>
 /* ---------- RESET ---------- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; background: #f0f4f1; color: #1a2820; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: #050608;
+  color: #f5f1e8;
+}
+
+/* ---------- COLORS & THEME ---------- */
+:root {
+  --bg-main: #050608;
+  --bg-panel: #0b0d11;
+  --bg-card: #111217;
+  --bg-card-soft: #151822;
+  --border-brass: #c89b3c;
+  --accent-gold: #e0b45c;
+  --accent-gold-soft: #b88a3a;
+  --text-main: #f5f1e8;
+  --text-muted: #b3a89a;
+  --error-red: #d9534f;
+  --success-green: #7fd38a;
+}
 
 /* ---------- HEADER ---------- */
-header { background: #2d6a4f; color: white; padding: 18px 16px 14px; text-align: center; }
-header h1 { font-size: 19px; font-weight: 800; }
-header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+header {
+  background: #050608;
+  border-bottom: 2px solid var(--border-brass);
+  padding: 16px 16px 10px;
+  text-align: center;
+}
+header h1 {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+header p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
 
 /* ---------- TABS ---------- */
-.tabs { display: flex; background: white; border-bottom: 2px solid #cdd8d2; }
-.tab-btn { flex: 1; padding: 15px 8px; font-size: 14px; font-weight: 700; background: white; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; color: #607068; cursor: pointer; }
-.tab-btn.active { color: #2d6a4f; border-bottom-color: #2d6a4f; }
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #262833;
+  background: #050608;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #7b7468;
+  cursor: pointer;
+}
+.tab-btn.active {
+  color: var(--accent-gold);
+  border-bottom-color: var(--border-brass);
+}
 
 /* ---------- PANELS ---------- */
-.panel { display: none; padding: 14px 14px 40px; max-width: 640px; margin: 0 auto; }
-.panel.active { display: block; }
+.panel {
+  display: none;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 14px 14px 40px;
+}
+.panel.active {
+  display: block;
+}
 
-/* ---------- BIRD HEADERS ---------- */
-.bird-head { text-align: center; margin-bottom: 16px; padding-top: 4px; }
-.bird-head .emo { font-size: 34px; }
-.bird-head h2 { font-size: 18px; color: #2d6a4f; margin-top: 4px; font-weight: 800; }
-.bird-head small { font-size: 12px; color: #607068; font-family: "Courier New", monospace; }
+/* ---------- BIRD BLOCKS (COLLAPSIBLE) ---------- */
+.bird-block {
+  background: var(--bg-panel);
+  border-radius: 14px;
+  border: 1px solid #262833;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.bird-block summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: radial-gradient(circle at top left, #1b1c24 0, #050608 60%);
+  border-bottom: 1px solid #262833;
+}
+.bird-block summary::-webkit-details-marker {
+  display: none;
+}
+.bird-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bird-emoji {
+  font-size: 20px;
+}
+.bird-label {
+  display: flex;
+  flex-direction: column;
+}
+.bird-label-main {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+.bird-label-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.bird-chevron {
+  font-size: 14px;
+  color: var(--accent-gold-soft);
+}
+.bird-block[open] .bird-chevron {
+  transform: rotate(90deg);
+}
+
+/* ---------- INNER CONTENT ---------- */
+.bird-inner {
+  padding: 12px 12px 14px;
+}
 
 /* ---------- CARDS ---------- */
-.card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.09); }
-.card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #607068; margin-bottom: 10px; }
-.count-row { display: flex; gap: 8px; margin-bottom: 14px; }
-.count-btn { flex: 1; padding: 14px 6px; font-size: 18px; font-weight: 800; border: 2px solid #cdd8d2; border-radius: 10px; background: white; cursor: pointer; }
-.count-btn.active { border-color: #2d6a4f; background: #d8f3dc; color: #2d6a4f; }
-.gen-btn { width: 100%; padding: 16px; font-size: 16px; font-weight: 800; background: #2d6a4f; color: white; border: none; border-radius: 10px; cursor: pointer; }
+.card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid #262833;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.6);
+}
+.card-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
 
-/* ---------- TRIALS ---------- */
-.trials-section { display: none; }
-.trials-section.on { display: block; }
-.score-card { background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.09); display: flex; align-items: center; gap: 14px; }
-.score-big { font-size: 38px; font-weight: 900; color: #2d6a4f; min-width: 78px; }
-.score-info { font-size: 12px; color: #607068; margin-bottom: 6px; }
-.prog-track { height: 8px; background: #cdd8d2; border-radius: 4px; overflow: hidden; }
-.prog-fill { height: 100%; background: #2d6a4f; width: 0%; transition: width 0.3s; }
+/* ---------- COUNT BUTTONS ---------- */
+.count-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.count-btn {
+  flex: 1;
+  padding: 10px 6px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 9px;
+  border: 1px solid #3a3c48;
+  background: #050608;
+  color: var(--text-main);
+  cursor: pointer;
+}
+.count-btn.active {
+  border-color: var(--border-brass);
+  box-shadow: 0 0 0 1px rgba(200,155,60,0.4);
+  background: #151822;
+  color: var(--accent-gold);
+}
 
-.trial-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
-.trial-row { background: white; border-radius: 10px; padding: 11px 12px; box-shadow: 0 1px 5px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 8px; border-left: 5px solid #cdd8d2; }
-.trial-row.correct { border-left-color: #2d6a4f; background: #edfaf2; }
-.trial-row.wrong { border-left-color: #b91c1c; background: #fef2f2; }
+/* ---------- GENERATE BUTTON ---------- */
+.gen-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  border-radius: 9px;
+  border: 1px solid var(--border-brass);
+  background: #050608;
+  color: var(--accent-gold);
+  cursor: pointer;
+}
 
-.t-num { font-size: 11px; font-weight: 700; color: #607068; min-width: 28px; }
-.t-stim { font-family: "Courier New", monospace; font-size: 20px; font-weight: 900; color: #2d6a4f; min-width: 44px; letter-spacing: 2px; }
-.t-choices { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
-.choice-btn { min-width: 46px; padding: 9px 11px; font-size: 15px; font-weight: 800; font-family: "Courier New", monospace; border: 2px solid #cdd8d2; border-radius: 8px; background: white; cursor: pointer; }
-.choice-btn.picked-right { background: #2d6a4f; border-color: #2d6a4f; color: white; }
-.choice-btn.picked-wrong { background: #b91c1c; border-color: #b91c1c; color: white; }
-.t-icon { font-size: 18px; min-width: 24px; text-align: center; }
+/* ---------- TRIALS SECTION ---------- */
+.trials-section {
+  display: none;
+}
+.trials-section.on {
+  display: block;
+}
 
-.action-row { display: flex; gap: 10px; margin-bottom: 14px; }
-.print-btn { flex: 1; padding: 15px 10px; font-size: 14px; font-weight: 800; background: #c77c1e; color: white; border: none; border-radius: 10px; cursor: pointer; }
-.reset-btn { flex: 1; padding: 15px 10px; font-size: 14px; font-weight: 800; background: white; border: 2px solid #cdd8d2; border-radius: 10px; cursor: pointer; }
+/* ---------- SCORE CARD ---------- */
+.score-card {
+  background: var(--bg-card-soft);
+  border-radius: 12px;
+  border: 1px solid #262833;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.score-big {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--accent-gold);
+  min-width: 70px;
+}
+.score-right {
+  flex: 1;
+}
+.score-info {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.prog-track {
+  height: 7px;
+  background: #1f212b;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7fd38a, #e0b45c);
+  width: 0%;
+  transition: width 0.25s ease-out;
+}
 
-/* ---------- PRINT ---------- */
+/* ---------- DATE LINE ---------- */
+.date-line {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 4px 2px 8px;
+}
+
+/* ---------- TRIAL LIST ---------- */
+.trial-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.trial-row {
+  background: #10121b;
+  border-radius: 10px;
+  border: 1px solid #262833;
+  padding: 9px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.trial-row.correct {
+  border-color: #3a6f4a;
+  background: #111b16;
+}
+.trial-row.wrong {
+  border-color: #7a2a2a;
+  background: #1a1010;
+}
+.t-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 28px;
+}
+.t-stim {
+  font-family: "Courier New", monospace;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--accent-gold);
+  min-width: 44px;
+  letter-spacing: 2px;
+}
+.t-choices {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.choice-btn {
+  min-width: 46px;
+  padding: 7px 9px;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: "Courier New", monospace;
+  border-radius: 7px;
+  border: 1px solid #3a3c48;
+  background: #050608;
+  color: var(--text-main);
+  cursor: pointer;
+}
+.choice-btn.picked-right {
+  background: #1f3a26;
+  border-color: #4fa463;
+  color: #bff3c8;
+}
+.choice-btn.picked-wrong {
+  background: #3a1f1f;
+  border-color: #d9534f;
+  color: #ffd4d2;
+}
+.t-icon {
+  font-size: 16px;
+  min-width: 22px;
+  text-align: center;
+}
+
+/* ---------- ACTION ROW ---------- */
+.action-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+.print-btn, .reset-btn {
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.print-btn {
+  border: 1px solid var(--border-brass);
+  background: #050608;
+  color: var(--accent-gold);
+}
+.reset-btn {
+  border: 1px solid #3a3c48;
+  background: #10121b;
+  color: var(--text-muted);
+}
+
+/* ---------- PRINT AREA ---------- */
 #print-area { display: none; }
 @media print {
   body > * { display: none !important; }
-  #print-area { display: block !important; padding: 24px; }
+  #print-area {
+    display: block !important;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: #000;
+  }
+  #print-area h1 {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  #print-area h2 {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 16px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+  }
+  #print-area p {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  #print-area table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 6px;
+  }
+  #print-area th, #print-area td {
+    border-bottom: 1px solid #ccc;
+    padding: 3px 4px;
+    text-align: left;
+  }
+}
+
+/* ---------- SMALL SCREEN ---------- */
+@media (max-width: 600px) {
+  .panel { padding: 10px 8px 30px; }
+  .bird-block { margin-bottom: 10px; }
 }
 </style>
 </head>
@@ -78,99 +402,231 @@ header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
 <div id="print-area"></div>
 
 <header>
-  <h1>🦜 Bird Training Schedule</h1>
+  <h1>Feathergraph Trainer</h1>
   <p id="hdr-date"></p>
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" id="tab-tala">🦜 Tala — Singles</button>
-  <button class="tab-btn" id="tab-pebble">🦜 Pebble — Pairs</button>
+  <button class="tab-btn active" id="tab-singles">Singles</button>
+  <button class="tab-btn" id="tab-pairs">Pairs</button>
 </div>
 
-<!-- TALA PANEL -->
-<div class="panel active" id="panel-tala">
-  <div class="bird-head">
-    <div class="emo">🦜</div>
-    <h2>Tala — Singles</h2>
-    <small>* (click) | ~ (tone)</small>
-  </div>
+<!-- SINGLES PANEL -->
+<div class="panel active" id="panel-singles">
 
-  <div class="card">
-    <div class="card-label">Number of Trials</div>
-    <div class="count-row">
-      <button class="count-btn active" id="tala-c20">20</button>
-      <button class="count-btn" id="tala-c40">40</button>
-      <button class="count-btn" id="tala-c60">60</button>
-    </div>
-    <button class="gen-btn" id="tala-gen">⚡ Generate Schedule</button>
-  </div>
+  <!-- TALA — SINGLES -->
+  <details class="bird-block" id="block-singlesTala" open>
+    <summary>
+      <div class="bird-title">
+        <div class="bird-emoji">🦜</div>
+        <div class="bird-label">
+          <span class="bird-label-main">Tala — Singles</span>
+          <span class="bird-label-sub">* (click) · ~ (tone)</span>
+        </div>
+      </div>
+      <div class="bird-chevron">▶</div>
+    </summary>
+    <div class="bird-inner">
+      <div class="card">
+        <div class="card-label">Number of Trials</div>
+        <div class="count-row">
+          <button class="count-btn active" id="singlesTala-c20">20</button>
+          <button class="count-btn" id="singlesTala-c40">40</button>
+          <button class="count-btn" id="singlesTala-c60">60</button>
+        </div>
+        <button class="gen-btn" id="singlesTala-gen">Generate Schedule</button>
+      </div>
 
-  <div class="trials-section" id="tala-trials">
-    <div class="score-card">
-      <div class="score-big" id="tala-pct">--</div>
-      <div class="score-right">
-        <div class="score-info" id="tala-info">No trials answered yet</div>
-        <div class="prog-track"><div class="prog-fill" id="tala-fill"></div></div>
+      <div class="trials-section" id="singlesTala-trials">
+        <div class="score-card">
+          <div class="score-big" id="singlesTala-pct">--</div>
+          <div class="score-right">
+            <div class="score-info" id="singlesTala-info">No trials answered yet</div>
+            <div class="prog-track"><div class="prog-fill" id="singlesTala-fill"></div></div>
+          </div>
+        </div>
+
+        <div class="date-line" id="singlesTala-date"></div>
+        <div class="trial-list" id="singlesTala-list"></div>
+
+        <div class="action-row">
+          <button class="print-btn" id="singlesTala-print">Print Results</button>
+          <button class="reset-btn" id="singlesTala-reset">New Session</button>
+        </div>
       </div>
     </div>
+  </details>
 
-    <div class="date-line" id="tala-date"></div>
-    <div class="trial-list" id="tala-list"></div>
+  <!-- PEBBLE — SINGLES -->
+  <details class="bird-block" id="block-singlesPebble">
+    <summary>
+      <div class="bird-title">
+        <div class="bird-emoji">🦜</div>
+        <div class="bird-label">
+          <span class="bird-label-main">Pebble — Singles</span>
+          <span class="bird-label-sub">* (click) · ~ (tone)</span>
+        </div>
+      </div>
+      <div class="bird-chevron">▶</div>
+    </summary>
+    <div class="bird-inner">
+      <div class="card">
+        <div class="card-label">Number of Trials</div>
+        <div class="count-row">
+          <button class="count-btn active" id="singlesPebble-c20">20</button>
+          <button class="count-btn" id="singlesPebble-c40">40</button>
+          <button class="count-btn" id="singlesPebble-c60">60</button>
+        </div>
+        <button class="gen-btn" id="singlesPebble-gen">Generate Schedule</button>
+      </div>
 
-    <div class="action-row">
-      <button class="print-btn" id="tala-print">🖨️ Print Results</button>
-      <button class="reset-btn" id="tala-reset">↻ New Session</button>
+      <div class="trials-section" id="singlesPebble-trials">
+        <div class="score-card">
+          <div class="score-big" id="singlesPebble-pct">--</div>
+          <div class="score-right">
+            <div class="score-info" id="singlesPebble-info">No trials answered yet</div>
+            <div class="prog-track"><div class="prog-fill" id="singlesPebble-fill"></div></div>
+          </div>
+        </div>
+
+        <div class="date-line" id="singlesPebble-date"></div>
+        <div class="trial-list" id="singlesPebble-list"></div>
+
+        <div class="action-row">
+          <button class="print-btn" id="singlesPebble-print">Print Results</button>
+          <button class="reset-btn" id="singlesPebble-reset">New Session</button>
+        </div>
+      </div>
     </div>
-  </div>
+  </details>
+
 </div>
 
-<!-- PEBBLE PANEL -->
-<div class="panel" id="panel-pebble">
-  <div class="bird-head">
-    <div class="emo">🦜</div>
-    <h2>Pebble — Pairs</h2>
-    <small>** | ~~ | *~ | ~*</small>
-  </div>
+<!-- PAIRS PANEL -->
+<div class="panel" id="panel-pairs">
 
-  <div class="card">
-    <div class="card-label">Number of Trials</div>
-    <div class="count-row">
-      <button class="count-btn active" id="pebble-c20">20</button>
-      <button class="count-btn" id="pebble-c40">40</button>
-      <button class="count-btn" id="pebble-c60">60</button>
-    </div>
-    <button class="gen-btn" id="pebble-gen">⚡ Generate Schedule</button>
-  </div>
+  <!-- TALA — PAIRS -->
+  <details class="bird-block" id="block-pairsTala" open>
+    <summary>
+      <div class="bird-title">
+        <div class="bird-emoji">🦜</div>
+        <div class="bird-label">
+          <span class="bird-label-main">Tala — Pairs</span>
+          <span class="bird-label-sub">** · ~~ · *~ · ~*</span>
+        </div>
+      </div>
+      <div class="bird-chevron">▶</div>
+    </summary>
+    <div class="bird-inner">
+      <div class="card">
+        <div class="card-label">Number of Trials</div>
+        <div class="count-row">
+          <button class="count-btn active" id="pairsTala-c20">20</button>
+          <button class="count-btn" id="pairsTala-c40">40</button>
+          <button class="count-btn" id="pairsTala-c60">60</button>
+        </div>
+        <button class="gen-btn" id="pairsTala-gen">Generate Schedule</button>
+      </div>
 
-  <div class="trials-section" id="pebble-trials">
-    <div class="score-card">
-      <div class="score-big" id="pebble-pct">--</div>
-      <div class="score-right">
-        <div class="score-info" id="pebble-info">No trials answered yet</div>
-        <div class="prog-track"><div class="prog-fill" id="pebble-fill"></div></div>
+      <div class="trials-section" id="pairsTala-trials">
+        <div class="score-card">
+          <div class="score-big" id="pairsTala-pct">--</div>
+          <div class="score-right">
+            <div class="score-info" id="pairsTala-info">No trials answered yet</div>
+            <div class="prog-track"><div class="prog-fill" id="pairsTala-fill"></div></div>
+          </div>
+        </div>
+
+        <div class="date-line" id="pairsTala-date"></div>
+        <div class="trial-list" id="pairsTala-list"></div>
+
+        <div class="action-row">
+          <button class="print-btn" id="pairsTala-print">Print Results</button>
+          <button class="reset-btn" id="pairsTala-reset">New Session</button>
+        </div>
       </div>
     </div>
+  </details>
 
-    <div class="date-line" id="pebble-date"></div>
-    <div class="trial-list" id="pebble-list"></div>
+  <!-- PEBBLE — PAIRS -->
+  <details class="bird-block" id="block-pairsPebble">
+    <summary>
+      <div class="bird-title">
+        <div class="bird-emoji">🦜</div>
+        <div class="bird-label">
+          <span class="bird-label-main">Pebble — Pairs</span>
+          <span class="bird-label-sub">** · ~~ · *~ · ~*</span>
+        </div>
+      </div>
+      <div class="bird-chevron">▶</div>
+    </summary>
+    <div class="bird-inner">
+      <div class="card">
+        <div class="card-label">Number of Trials</div>
+        <div class="count-row">
+          <button class="count-btn active" id="pairsPebble-c20">20</button>
+          <button class="count-btn" id="pairsPebble-c40">40</button>
+          <button class="count-btn" id="pairsPebble-c60">60</button>
+        </div>
+        <button class="gen-btn" id="pairsPebble-gen">Generate Schedule</button>
+      </div>
 
-    <div class="action-row">
-      <button class="print-btn" id="pebble-print">🖨️ Print Results</button>
-      <button class="reset-btn" id="pebble-reset">↻ New Session</button>
+      <div class="trials-section" id="pairsPebble-trials">
+        <div class="score-card">
+          <div class="score-big" id="pairsPebble-pct">--</div>
+          <div class="score-right">
+            <div class="score-info" id="pairsPebble-info">No trials answered yet</div>
+            <div class="prog-track"><div class="prog-fill" id="pairsPebble-fill"></div></div>
+          </div>
+        </div>
+
+        <div class="date-line" id="pairsPebble-date"></div>
+        <div class="trial-list" id="pairsPebble-list"></div>
+
+        <div class="action-row">
+          <button class="print-btn" id="pairsPebble-print">Print Results</button>
+          <button class="reset-btn" id="pairsPebble-reset">New Session</button>
+        </div>
+      </div>
     </div>
-  </div>
+  </details>
+
 </div>
 
 <script>
 (function() {
-  const STIMULI = {
-    tala: ['*','~'],
-    pebble: ['**','~~','*~','~*']
+  const CONFIG = {
+    singlesTala: {
+      label: 'Tala — Singles',
+      mode: 'Singles',
+      bird: 'Tala',
+      stimuli: ['*','~']
+    },
+    singlesPebble: {
+      label: 'Pebble — Singles',
+      mode: 'Singles',
+      bird: 'Pebble',
+      stimuli: ['*','~']
+    },
+    pairsTala: {
+      label: 'Tala — Pairs',
+      mode: 'Pairs',
+      bird: 'Tala',
+      stimuli: ['**','~~','*~','~*']
+    },
+    pairsPebble: {
+      label: 'Pebble — Pairs',
+      mode: 'Pairs',
+      bird: 'Pebble',
+      stimuli: ['**','~~','*~','~*']
+    }
   };
 
   const state = {
-    tala: { count: 20, trials: [] },
-    pebble: { count: 20, trials: [] }
+    singlesTala: { count: 20, trials: [] },
+    singlesPebble: { count: 20, trials: [] },
+    pairsTala: { count: 20, trials: [] },
+    pairsPebble: { count: 20, trials: [] }
   };
 
   const dateStr = new Date().toLocaleDateString('en-US', {
@@ -179,85 +635,93 @@ header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
 
   document.getElementById('hdr-date').textContent = dateStr;
 
-  /* ---------- TAB SWITCHING ---------- */
-  document.getElementById('tab-tala').onclick = () => {
-    document.getElementById('tab-tala').classList.add('active');
-    document.getElementById('tab-pebble').classList.remove('active');
-    document.getElementById('panel-tala').classList.add('active');
-    document.getElementById('panel-pebble').classList.remove('active');
+  /* ---------- TABS ---------- */
+  const tabSingles = document.getElementById('tab-singles');
+  const tabPairs = document.getElementById('tab-pairs');
+  const panelSingles = document.getElementById('panel-singles');
+  const panelPairs = document.getElementById('panel-pairs');
+
+  tabSingles.onclick = () => {
+    tabSingles.classList.add('active');
+    tabPairs.classList.remove('active');
+    panelSingles.classList.add('active');
+    panelPairs.classList.remove('active');
   };
 
-  document.getElementById('tab-pebble').onclick = () => {
-    document.getElementById('tab-pebble').classList.add('active');
-    document.getElementById('tab-tala').classList.remove('active');
-    document.getElementById('panel-pebble').classList.add('active');
-    document.getElementById('panel-tala').classList.remove('active');
+  tabPairs.onclick = () => {
+    tabPairs.classList.add('active');
+    tabSingles.classList.remove('active');
+    panelPairs.classList.add('active');
+    panelSingles.classList.remove('active');
   };
 
   /* ---------- COUNT BUTTONS ---------- */
-  function wireCount(bird, n) {
-    document.getElementById(`${bird}-c${n}`).onclick = () => {
-      state[bird].count = n;
-      ['20','40','60'].forEach(v =>
-        document.getElementById(`${bird}-c${v}`).classList.remove('active')
-      );
-      document.getElementById(`${bird}-c${n}`).classList.add('active');
-    };
+  function wireCount(key) {
+    [20,40,60].forEach(n => {
+      const btn = document.getElementById(`${key}-c${n}`);
+      btn.onclick = () => {
+        state[key].count = n;
+        [20,40,60].forEach(m => {
+          document.getElementById(`${key}-c${m}`).classList.remove('active');
+        });
+        btn.classList.add('active');
+      };
+    });
   }
 
-  ['tala','pebble'].forEach(bird => {
-    [20,40,60].forEach(n => wireCount(bird,n));
-  });
+  Object.keys(CONFIG).forEach(key => wireCount(key));
 
   /* ---------- GENERATE TRIALS ---------- */
-  function generate(bird) {
-    const stims = STIMULI[bird];
-    const total = state[bird].count;
+  function generate(key) {
+    const cfg = CONFIG[key];
+    const stims = cfg.stimuli;
+    const total = state[key].count;
     const pool = [];
 
     const base = Math.floor(total / stims.length);
     const rem = total % stims.length;
 
-    for (let i=0; i<stims.length; i++) {
+    for (let i = 0; i < stims.length; i++) {
       const n = base + (i < rem ? 1 : 0);
-      for (let k=0; k<n; k++) {
+      for (let k = 0; k < n; k++) {
         pool.push({ stim: stims[i], choice: null, ok: null });
       }
     }
 
-    // Shuffle
-    for (let i=pool.length-1; i>0; i--) {
-      const j = Math.floor(Math.random()*(i+1));
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
       [pool[i], pool[j]] = [pool[j], pool[i]];
     }
 
-    state[bird].trials = pool;
-    document.getElementById(`${bird}-date`).textContent = dateStr;
-    document.getElementById(`${bird}-trials`).classList.add('on');
+    state[key].trials = pool;
+    document.getElementById(`${key}-date`).textContent = dateStr;
+    document.getElementById(`${key}-trials`).classList.add('on');
 
-    renderList(bird);
-    updateScore(bird);
+    renderList(key);
+    updateScore(key);
   }
 
-  document.getElementById('tala-gen').onclick = () => generate('tala');
-  document.getElementById('pebble-gen').onclick = () => generate('pebble');
+  document.getElementById('singlesTala-gen').onclick = () => generate('singlesTala');
+  document.getElementById('singlesPebble-gen').onclick = () => generate('singlesPebble');
+  document.getElementById('pairsTala-gen').onclick = () => generate('pairsTala');
+  document.getElementById('pairsPebble-gen').onclick = () => generate('pairsPebble');
 
   /* ---------- RENDER TRIAL LIST ---------- */
-  function renderList(bird) {
-    const list = document.getElementById(`${bird}-list`);
-    const trials = state[bird].trials;
-    const stims = STIMULI[bird];
+  function renderList(key) {
+    const list = document.getElementById(`${key}-list`);
+    const trials = state[key].trials;
+    const stims = CONFIG[key].stimuli;
 
     list.innerHTML = '';
 
     trials.forEach((t, idx) => {
       const row = document.createElement('div');
       row.className = 'trial-row';
-      row.id = `${bird}-row-${idx}`;
+      row.id = `${key}-row-${idx}`;
 
       const num = document.createElement('span');
       num.className = 't-num';
-      num.textContent = `#${idx+1}`;
+      num.textContent = `#${idx + 1}`;
 
       const stim = document.createElement('span');
       stim.className = 't-stim';
@@ -270,7 +734,7 @@ header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
         const btn = document.createElement('button');
         btn.className = 'choice-btn';
         btn.textContent = s;
-        btn.onclick = () => pick(bird, idx, s);
+        btn.onclick = () => pick(key, idx, s);
         choices.appendChild(btn);
       });
 
@@ -287,15 +751,15 @@ header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
   }
 
   /* ---------- PICK CHOICE ---------- */
-  function pick(bird, idx, choice) {
-    const t = state[bird].trials[idx];
+  function pick(key, idx, choice) {
+    const t = state[key].trials[idx];
     t.choice = choice;
     t.ok = (choice === t.stim);
 
-    const row = document.getElementById(`${bird}-row-${idx}`);
+    const row = document.getElementById(`${key}-row-${idx}`);
     row.className = `trial-row ${t.ok ? 'correct' : 'wrong'}`;
 
-    const stims = STIMULI[bird];
+    const stims = CONFIG[key].stimuli;
     const choices = row.querySelector('.t-choices');
     choices.innerHTML = '';
 
@@ -306,18 +770,18 @@ header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
         btn.classList.add(t.ok ? 'picked-right' : 'picked-wrong');
       }
       btn.textContent = s;
-      btn.onclick = () => pick(bird, idx, s);
+      btn.onclick = () => pick(key, idx, s);
       choices.appendChild(btn);
     });
 
     row.querySelector('.t-icon').textContent = t.ok ? '✔️' : '❌';
 
-    updateScore(bird);
+    updateScore(key);
   }
 
   /* ---------- SCORE ---------- */
-  function updateScore(bird) {
-    const trials = state[bird].trials;
+  function updateScore(key) {
+    const trials = state[key].trials;
     let answered = 0, correct = 0;
 
     trials.forEach(t => {
@@ -325,58 +789,60 @@ header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
       if (t.ok === true) correct++;
     });
 
-    const pct = answered > 0 ? Math.round(correct / answered * 100) : '--';
+    const pct = answered > 0 ? Math.round((correct / answered) * 100) : '--';
 
-    document.getElementById(`${bird}-pct`).textContent = pct === '--' ? '--' : pct + '%';
-    document.getElementById(`${bird}-info`).textContent =
+    document.getElementById(`${key}-pct`).textContent = pct === '--' ? '--' : pct + '%';
+    document.getElementById(`${key}-info`).textContent =
       answered > 0
         ? `${correct} correct of ${answered} answered · ${trials.length} total`
         : 'No trials answered yet';
 
-    document.getElementById(`${bird}-fill`).style.width =
+    document.getElementById(`${key}-fill`).style.width =
       pct === '--' ? '0%' : pct + '%';
   }
 
   /* ---------- RESET ---------- */
-  function doReset(bird) {
-    state[bird].trials = [];
-    document.getElementById(`${bird}-trials`).classList.remove('on');
-    document.getElementById(`${bird}-list`).innerHTML = '';
-    document.getElementById(`${bird}-pct`).textContent = '--';
-    document.getElementById(`${bird}-info`).textContent = 'No trials answered yet';
-    document.getElementById(`${bird}-fill`).style.width = '0%';
+  function doReset(key) {
+    state[key].trials = [];
+    document.getElementById(`${key}-trials`).classList.remove('on');
+    document.getElementById(`${key}-list`).innerHTML = '';
+    document.getElementById(`${key}-pct`).textContent = '--';
+    document.getElementById(`${key}-info`).textContent = 'No trials answered yet';
+    document.getElementById(`${key}-fill`).style.width = '0%';
   }
 
-  document.getElementById('tala-reset').onclick = () => doReset('tala');
-  document.getElementById('pebble-reset').onclick = () => doReset('pebble');
+  document.getElementById('singlesTala-reset').onclick = () => doReset('singlesTala');
+  document.getElementById('singlesPebble-reset').onclick = () => doReset('singlesPebble');
+  document.getElementById('pairsTala-reset').onclick = () => doReset('pairsTala');
+  document.getElementById('pairsPebble-reset').onclick = () => doReset('pairsPebble');
 
   /* ---------- PRINT ---------- */
-  function doPrint(bird) {
+  function doPrint(key) {
+    const cfg = CONFIG[key];
+    const trials = state[key].trials;
     const printArea = document.getElementById('print-area');
-    const trials = state[bird].trials;
-    const title = bird === 'tala' ? 'Tala — Singles' : 'Pebble — Pairs';
 
     let answered = 0, correct = 0;
     trials.forEach(t => {
       if (t.ok !== null) answered++;
       if (t.ok === true) correct++;
     });
-    const pct = answered > 0 ? Math.round(correct / answered * 100) : '--';
+    const pct = answered > 0 ? Math.round((correct / answered) * 100) : '--';
 
     let html = '';
-    html += `<h1>${title}</h1>`;
+    html += `<h1>Feathergraph Trainer</h1>`;
     html += `<p>${dateStr}</p>`;
+    html += `<h2>${cfg.bird} — ${cfg.mode}</h2>`;
     html += `<p>${correct} correct of ${answered} answered · ${trials.length} total · ${pct === '--' ? '--' : pct + '%'}</p>`;
-    html += '<hr>';
-    html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
-    html += '<tr><th style="text-align:left;border-bottom:1px solid #ccc;">#</th><th style="text-align:left;border-bottom:1px solid #ccc;">Stimulus</th><th style="text-align:left;border-bottom:1px solid #ccc;">Choice</th><th style="text-align:left;border-bottom:1px solid #ccc;">Correct?</th></tr>';
+    html += '<table>';
+    html += '<tr><th>#</th><th>Stimulus</th><th>Choice</th><th>Correct?</th></tr>';
 
     trials.forEach((t, idx) => {
       html += '<tr>';
-      html += `<td style="padding:4px 2px;border-bottom:1px solid #eee;">${idx+1}</td>`;
-      html += `<td style="padding:4px 2px;border-bottom:1px solid #eee;font-family:'Courier New',monospace;">${t.stim}</td>`;
-      html += `<td style="padding:4px 2px;border-bottom:1px solid #eee;font-family:'Courier New',monospace;">${t.choice === null ? '' : t.choice}</td>`;
-      html += `<td style="padding:4px 2px;border-bottom:1px solid #eee;">${t.ok === null ? '' : (t.ok ? '✔️' : '❌')}</td>`;
+      html += `<td>${idx + 1}</td>`;
+      html += `<td style="font-family:'Courier New',monospace;">${t.stim}</td>`;
+      html += `<td style="font-family:'Courier New',monospace;">${t.choice === null ? '' : t.choice}</td>`;
+      html += `<td>${t.ok === null ? '' : (t.ok ? '✔️' : '❌')}</td>`;
       html += '</tr>';
     });
 
@@ -386,8 +852,10 @@ header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
     window.print();
   }
 
-  document.getElementById('tala-print').onclick = () => doPrint('tala');
-  document.getElementById('pebble-print').onclick = () => doPrint('pebble');
+  document.getElementById('singlesTala-print').onclick = () => doPrint('singlesTala');
+  document.getElementById('singlesPebble-print').onclick = () => doPrint('singlesPebble');
+  document.getElementById('pairsTala-print').onclick = () => doPrint('pairsTala');
+  document.getElementById('pairsPebble-print').onclick = () => doPrint('pairsPebble');
 
 })();
 </script>

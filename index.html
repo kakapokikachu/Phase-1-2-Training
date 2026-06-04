@@ -1,11 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bird Training Schedule</title>
+
+<style>
+/* ---------- RESET ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; background: #f0f4f1; color: #1a2820; }
+
+/* ---------- HEADER ---------- */
+header { background: #2d6a4f; color: white; padding: 18px 16px 14px; text-align: center; }
+header h1 { font-size: 19px; font-weight: 800; }
+header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+
+/* ---------- TABS ---------- */
+.tabs { display: flex; background: white; border-bottom: 2px solid #cdd8d2; }
+.tab-btn { flex: 1; padding: 15px 8px; font-size: 14px; font-weight: 700; background: white; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; color: #607068; cursor: pointer; }
+.tab-btn.active { color: #2d6a4f; border-bottom-color: #2d6a4f; }
+
+/* ---------- PANELS ---------- */
+.panel { display: none; padding: 14px 14px 40px; max-width: 640px; margin: 0 auto; }
+.panel.active { display: block; }
+
+/* ---------- BIRD HEADERS ---------- */
+.bird-head { text-align: center; margin-bottom: 16px; padding-top: 4px; }
+.bird-head .emo { font-size: 34px; }
+.bird-head h2 { font-size: 18px; color: #2d6a4f; margin-top: 4px; font-weight: 800; }
+.bird-head small { font-size: 12px; color: #607068; font-family: "Courier New", monospace; }
+
+/* ---------- CARDS ---------- */
+.card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.09); }
+.card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #607068; margin-bottom: 10px; }
+.count-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.count-btn { flex: 1; padding: 14px 6px; font-size: 18px; font-weight: 800; border: 2px solid #cdd8d2; border-radius: 10px; background: white; cursor: pointer; }
+.count-btn.active { border-color: #2d6a4f; background: #d8f3dc; color: #2d6a4f; }
+.gen-btn { width: 100%; padding: 16px; font-size: 16px; font-weight: 800; background: #2d6a4f; color: white; border: none; border-radius: 10px; cursor: pointer; }
+
+/* ---------- TRIALS ---------- */
+.trials-section { display: none; }
+.trials-section.on { display: block; }
+.score-card { background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.09); display: flex; align-items: center; gap: 14px; }
+.score-big { font-size: 38px; font-weight: 900; color: #2d6a4f; min-width: 78px; }
+.score-info { font-size: 12px; color: #607068; margin-bottom: 6px; }
+.prog-track { height: 8px; background: #cdd8d2; border-radius: 4px; overflow: hidden; }
+.prog-fill { height: 100%; background: #2d6a4f; width: 0%; transition: width 0.3s; }
+
+.trial-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+.trial-row { background: white; border-radius: 10px; padding: 11px 12px; box-shadow: 0 1px 5px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 8px; border-left: 5px solid #cdd8d2; }
+.trial-row.correct { border-left-color: #2d6a4f; background: #edfaf2; }
+.trial-row.wrong { border-left-color: #b91c1c; background: #fef2f2; }
+
+.t-num { font-size: 11px; font-weight: 700; color: #607068; min-width: 28px; }
+.t-stim { font-family: "Courier New", monospace; font-size: 20px; font-weight: 900; color: #2d6a4f; min-width: 44px; letter-spacing: 2px; }
+.t-choices { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.choice-btn { min-width: 46px; padding: 9px 11px; font-size: 15px; font-weight: 800; font-family: "Courier New", monospace; border: 2px solid #cdd8d2; border-radius: 8px; background: white; cursor: pointer; }
+.choice-btn.picked-right { background: #2d6a4f; border-color: #2d6a4f; color: white; }
+.choice-btn.picked-wrong { background: #b91c1c; border-color: #b91c1c; color: white; }
+.t-icon { font-size: 18px; min-width: 24px; text-align: center; }
+
+.action-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.print-btn { flex: 1; padding: 15px 10px; font-size: 14px; font-weight: 800; background: #c77c1e; color: white; border: none; border-radius: 10px; cursor: pointer; }
+.reset-btn { flex: 1; padding: 15px 10px; font-size: 14px; font-weight: 800; background: white; border: 2px solid #cdd8d2; border-radius: 10px; cursor: pointer; }
+
+/* ---------- PRINT ---------- */
+#print-area { display: none; }
+@media print {
+  body > * { display: none !important; }
+  #print-area { display: block !important; padding: 24px; }
+}
+</style>
+</head>
+
+<body>
+
 <div id="print-area"></div>
-<header><h1>&#128038; Bird Training Schedule</h1><p id="hdr-date"></p></header>
+
+<header>
+  <h1>🦜 Bird Training Schedule</h1>
+  <p id="hdr-date"></p>
+</header>
+
 <div class="tabs">
-  <button class="tab-btn active" id="tab-tala">&#128027; Tala &mdash; Singles</button>
-  <button class="tab-btn" id="tab-pebble">&#128027; Pebble &mdash; Pairs</button>
+  <button class="tab-btn active" id="tab-tala">🦜 Tala — Singles</button>
+  <button class="tab-btn" id="tab-pebble">🦜 Pebble — Pairs</button>
 </div>
+
+<!-- TALA PANEL -->
 <div class="panel active" id="panel-tala">
-  <div class="bird-head"><div class="emo">&#128027;</div><h2>Tala &mdash; Singles</h2><small>* (click) &nbsp;|&nbsp; ~ (tone)</small></div>
+  <div class="bird-head">
+    <div class="emo">🦜</div>
+    <h2>Tala — Singles</h2>
+    <small>* (click) | ~ (tone)</small>
+  </div>
+
   <div class="card">
     <div class="card-label">Number of Trials</div>
     <div class="count-row">
@@ -13,20 +102,36 @@
       <button class="count-btn" id="tala-c40">40</button>
       <button class="count-btn" id="tala-c60">60</button>
     </div>
-    <button class="gen-btn" id="tala-gen">&#9889; Generate Schedule</button>
+    <button class="gen-btn" id="tala-gen">⚡ Generate Schedule</button>
   </div>
+
   <div class="trials-section" id="tala-trials">
-    <div class="score-card"><div class="score-big" id="tala-pct">--</div><div class="score-right"><div class="score-info" id="tala-info">No trials answered yet</div><div class="prog-track"><div class="prog-fill" id="tala-fill"></div></div></div></div>
+    <div class="score-card">
+      <div class="score-big" id="tala-pct">--</div>
+      <div class="score-right">
+        <div class="score-info" id="tala-info">No trials answered yet</div>
+        <div class="prog-track"><div class="prog-fill" id="tala-fill"></div></div>
+      </div>
+    </div>
+
     <div class="date-line" id="tala-date"></div>
     <div class="trial-list" id="tala-list"></div>
+
     <div class="action-row">
-      <button class="print-btn" id="tala-print">&#128438; Print Results</button>
-      <button class="reset-btn" id="tala-reset">&#8635; New Session</button>
+      <button class="print-btn" id="tala-print">🖨️ Print Results</button>
+      <button class="reset-btn" id="tala-reset">↻ New Session</button>
     </div>
   </div>
 </div>
+
+<!-- PEBBLE PANEL -->
 <div class="panel" id="panel-pebble">
-  <div class="bird-head"><div class="emo">&#128027;</div><h2>Pebble &mdash; Pairs</h2><small>** &nbsp;|&nbsp; ~~ &nbsp;|&nbsp; *~ &nbsp;|&nbsp; ~*</small></div>
+  <div class="bird-head">
+    <div class="emo">🦜</div>
+    <h2>Pebble — Pairs</h2>
+    <small>** | ~~ | *~ | ~*</small>
+  </div>
+
   <div class="card">
     <div class="card-label">Number of Trials</div>
     <div class="count-row">
@@ -34,15 +139,208 @@
       <button class="count-btn" id="pebble-c40">40</button>
       <button class="count-btn" id="pebble-c60">60</button>
     </div>
-    <button class="gen-btn" id="pebble-gen">&#9889; Generate Schedule</button>
+    <button class="gen-btn" id="pebble-gen">⚡ Generate Schedule</button>
   </div>
+
   <div class="trials-section" id="pebble-trials">
-    <div class="score-card"><div class="score-big" id="pebble-pct">--</div><div class="score-right"><div class="score-info" id="pebble-info">No trials answered yet</div><div class="prog-track"><div class="prog-fill" id="pebble-fill"></div></div></div></div>
+    <div class="score-card">
+      <div class="score-big" id="pebble-pct">--</div>
+      <div class="score-right">
+        <div class="score-info" id="pebble-info">No trials answered yet</div>
+        <div class="prog-track"><div class="prog-fill" id="pebble-fill"></div></div>
+      </div>
+    </div>
+
     <div class="date-line" id="pebble-date"></div>
     <div class="trial-list" id="pebble-list"></div>
+
     <div class="action-row">
-      <button class="print-btn" id="pebble-print">&#128438; Print Results</button>
-      <button class="reset-btn" id="pebble-reset">&#8635; New Session</button>
+      <button class="print-btn" id="pebble-print">🖨️ Print Results</button>
+      <button class="reset-btn" id="pebble-reset">↻ New Session</button>
     </div>
   </div>
 </div>
+
+<script>
+(function() {
+  const STIMULI = {
+    tala: ['*','~'],
+    pebble: ['**','~~','*~','~*']
+  };
+
+  const state = {
+    tala: { count: 20, trials: [] },
+    pebble: { count: 20, trials: [] }
+  };
+
+  const dateStr = new Date().toLocaleDateString('en-US', {
+    weekday:'long', year:'numeric', month:'long', day:'numeric'
+  });
+
+  document.getElementById('hdr-date').textContent = dateStr;
+
+  /* ---------- TAB SWITCHING ---------- */
+  document.getElementById('tab-tala').onclick = () => {
+    document.getElementById('tab-tala').classList.add('active');
+    document.getElementById('tab-pebble').classList.remove('active');
+    document.getElementById('panel-tala').classList.add('active');
+    document.getElementById('panel-pebble').classList.remove('active');
+  };
+
+  document.getElementById('tab-pebble').onclick = () => {
+    document.getElementById('tab-pebble').classList.add('active');
+    document.getElementById('tab-tala').classList.remove('active');
+    document.getElementById('panel-pebble').classList.add('active');
+    document.getElementById('panel-tala').classList.remove('active');
+  };
+
+  /* ---------- COUNT BUTTONS ---------- */
+  function wireCount(bird, n) {
+    document.getElementById(`${bird}-c${n}`).onclick = () => {
+      state[bird].count = n;
+      ['20','40','60'].forEach(v =>
+        document.getElementById(`${bird}-c${v}`).classList.remove('active')
+      );
+      document.getElementById(`${bird}-c${n}`).classList.add('active');
+    };
+  }
+
+  ['tala','pebble'].forEach(bird => {
+    [20,40,60].forEach(n => wireCount(bird,n));
+  });
+
+  /* ---------- GENERATE TRIALS ---------- */
+  function generate(bird) {
+    const stims = STIMULI[bird];
+    const total = state[bird].count;
+    const pool = [];
+
+    const base = Math.floor(total / stims.length);
+    const rem = total % stims.length;
+
+    for (let i=0; i<stims.length; i++) {
+      const n = base + (i < rem ? 1 : 0);
+      for (let k=0; k<n; k++) {
+        pool.push({ stim: stims[i], choice: null, ok: null });
+      }
+    }
+
+    // Shuffle
+    for (let i=pool.length-1; i>0; i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+
+    state[bird].trials = pool;
+    document.getElementById(`${bird}-date`).textContent = dateStr;
+    document.getElementById(`${bird}-trials`).classList.add('on');
+
+    renderList(bird);
+    updateScore(bird);
+  }
+
+  document.getElementById('tala-gen').onclick = () => generate('tala');
+  document.getElementById('pebble-gen').onclick = () => generate('pebble');
+
+  /* ---------- RENDER TRIAL LIST ---------- */
+  function renderList(bird) {
+    const list = document.getElementById(`${bird}-list`);
+    const trials = state[bird].trials;
+    const stims = STIMULI[bird];
+
+    list.innerHTML = '';
+
+    trials.forEach((t, idx) => {
+      const row = document.createElement('div');
+      row.className = 'trial-row';
+      row.id = `${bird}-row-${idx}`;
+
+      const num = document.createElement('span');
+      num.className = 't-num';
+      num.textContent = `#${idx+1}`;
+
+      const stim = document.createElement('span');
+      stim.className = 't-stim';
+      stim.textContent = t.stim;
+
+      const choices = document.createElement('div');
+      choices.className = 't-choices';
+
+      stims.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = s;
+        btn.onclick = () => pick(bird, idx, s);
+        choices.appendChild(btn);
+      });
+
+      const icon = document.createElement('span');
+      icon.className = 't-icon';
+
+      row.appendChild(num);
+      row.appendChild(stim);
+      row.appendChild(choices);
+      row.appendChild(icon);
+
+      list.appendChild(row);
+    });
+  }
+
+  /* ---------- PICK CHOICE ---------- */
+  function pick(bird, idx, choice) {
+    const t = state[bird].trials[idx];
+    t.choice = choice;
+    t.ok = (choice === t.stim);
+
+    const row = document.getElementById(`${bird}-row-${idx}`);
+    row.className = `trial-row ${t.ok ? 'correct' : 'wrong'}`;
+
+    const stims = STIMULI[bird];
+    const choices = row.querySelector('.t-choices');
+    choices.innerHTML = '';
+
+    stims.forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      if (t.choice === s) {
+        btn.classList.add(t.ok ? 'picked-right' : 'picked-wrong');
+      }
+      btn.textContent = s;
+      btn.onclick = () => pick(bird, idx, s);
+      choices.appendChild(btn);
+    });
+
+    row.querySelector('.t-icon').textContent = t.ok ? '✔️' : '❌';
+
+    updateScore(bird);
+  }
+
+  /* ---------- SCORE ---------- */
+  function updateScore(bird) {
+    const trials = state[bird].trials;
+    let answered = 0, correct = 0;
+
+    trials.forEach(t => {
+      if (t.ok !== null) answered++;
+      if (t.ok === true) correct++;
+    });
+
+    const pct = answered > 0 ? Math.round(correct / answered * 100) : '--';
+
+    document.getElementById(`${bird}-pct`).textContent = pct === '--' ? '--' : pct + '%';
+    document.getElementById(`${bird}-info`).textContent =
+      answered > 0
+        ? `${correct} correct of ${answered} answered · ${trials.length} total`
+        : 'No trials answered yet';
+
+    document.getElementById(`${bird}-fill`).style.width =
+      pct === '--' ? '0%' : pct + '%';
+  }
+
+  /* ---------- RESET ---------- */
+  function doReset(bird) {
+    state[bird].trials = [];
+    document.getElementById(`${bird}-trials`).classList.remove('on');
+    document.getElementById(`${bird}-list`).innerHTML = '';
+    document.getElementById(`${bird}-pct`).textContent = '--';
+    document.getElementById(`${bird}-info`).textContent =

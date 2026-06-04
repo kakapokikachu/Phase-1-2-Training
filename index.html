@@ -343,4 +343,54 @@ header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
     document.getElementById(`${bird}-trials`).classList.remove('on');
     document.getElementById(`${bird}-list`).innerHTML = '';
     document.getElementById(`${bird}-pct`).textContent = '--';
-    document.getElementById(`${bird}-info`).textContent =
+    document.getElementById(`${bird}-info`).textContent = 'No trials answered yet';
+    document.getElementById(`${bird}-fill`).style.width = '0%';
+  }
+
+  document.getElementById('tala-reset').onclick = () => doReset('tala');
+  document.getElementById('pebble-reset').onclick = () => doReset('pebble');
+
+  /* ---------- PRINT ---------- */
+  function doPrint(bird) {
+    const printArea = document.getElementById('print-area');
+    const trials = state[bird].trials;
+    const title = bird === 'tala' ? 'Tala — Singles' : 'Pebble — Pairs';
+
+    let answered = 0, correct = 0;
+    trials.forEach(t => {
+      if (t.ok !== null) answered++;
+      if (t.ok === true) correct++;
+    });
+    const pct = answered > 0 ? Math.round(correct / answered * 100) : '--';
+
+    let html = '';
+    html += `<h1>${title}</h1>`;
+    html += `<p>${dateStr}</p>`;
+    html += `<p>${correct} correct of ${answered} answered · ${trials.length} total · ${pct === '--' ? '--' : pct + '%'}</p>`;
+    html += '<hr>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+    html += '<tr><th style="text-align:left;border-bottom:1px solid #ccc;">#</th><th style="text-align:left;border-bottom:1px solid #ccc;">Stimulus</th><th style="text-align:left;border-bottom:1px solid #ccc;">Choice</th><th style="text-align:left;border-bottom:1px solid #ccc;">Correct?</th></tr>';
+
+    trials.forEach((t, idx) => {
+      html += '<tr>';
+      html += `<td style="padding:4px 2px;border-bottom:1px solid #eee;">${idx+1}</td>`;
+      html += `<td style="padding:4px 2px;border-bottom:1px solid #eee;font-family:'Courier New',monospace;">${t.stim}</td>`;
+      html += `<td style="padding:4px 2px;border-bottom:1px solid #eee;font-family:'Courier New',monospace;">${t.choice === null ? '' : t.choice}</td>`;
+      html += `<td style="padding:4px 2px;border-bottom:1px solid #eee;">${t.ok === null ? '' : (t.ok ? '✔️' : '❌')}</td>`;
+      html += '</tr>';
+    });
+
+    html += '</table>';
+
+    printArea.innerHTML = html;
+    window.print();
+  }
+
+  document.getElementById('tala-print').onclick = () => doPrint('tala');
+  document.getElementById('pebble-print').onclick = () => doPrint('pebble');
+
+})();
+</script>
+
+</body>
+</html>

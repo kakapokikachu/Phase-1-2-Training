@@ -1,0 +1,48 @@
+<div id="print-area"></div>
+<header><h1>&#128038; Bird Training Schedule</h1><p id="hdr-date"></p></header>
+<div class="tabs">
+  <button class="tab-btn active" id="tab-tala">&#128027; Tala &mdash; Singles</button>
+  <button class="tab-btn" id="tab-pebble">&#128027; Pebble &mdash; Pairs</button>
+</div>
+<div class="panel active" id="panel-tala">
+  <div class="bird-head"><div class="emo">&#128027;</div><h2>Tala &mdash; Singles</h2><small>* (click) &nbsp;|&nbsp; ~ (tone)</small></div>
+  <div class="card">
+    <div class="card-label">Number of Trials</div>
+    <div class="count-row">
+      <button class="count-btn active" id="tala-c20">20</button>
+      <button class="count-btn" id="tala-c40">40</button>
+      <button class="count-btn" id="tala-c60">60</button>
+    </div>
+    <button class="gen-btn" id="tala-gen">&#9889; Generate Schedule</button>
+  </div>
+  <div class="trials-section" id="tala-trials">
+    <div class="score-card"><div class="score-big" id="tala-pct">--</div><div class="score-right"><div class="score-info" id="tala-info">No trials answered yet</div><div class="prog-track"><div class="prog-fill" id="tala-fill"></div></div></div></div>
+    <div class="date-line" id="tala-date"></div>
+    <div class="trial-list" id="tala-list"></div>
+    <div class="action-row">
+      <button class="print-btn" id="tala-print">&#128438; Print Results</button>
+      <button class="reset-btn" id="tala-reset">&#8635; New Session</button>
+    </div>
+  </div>
+</div>
+<div class="panel" id="panel-pebble">
+  <div class="bird-head"><div class="emo">&#128027;</div><h2>Pebble &mdash; Pairs</h2><small>** &nbsp;|&nbsp; ~~ &nbsp;|&nbsp; *~ &nbsp;|&nbsp; ~*</small></div>
+  <div class="card">
+    <div class="card-label">Number of Trials</div>
+    <div class="count-row">
+      <button class="count-btn active" id="pebble-c20">20</button>
+      <button class="count-btn" id="pebble-c40">40</button>
+      <button class="count-btn" id="pebble-c60">60</button>
+    </div>
+    <button class="gen-btn" id="pebble-gen">&#9889; Generate Schedule</button>
+  </div>
+  <div class="trials-section" id="pebble-trials">
+    <div class="score-card"><div class="score-big" id="pebble-pct">--</div><div class="score-right"><div class="score-info" id="pebble-info">No trials answered yet</div><div class="prog-track"><div class="prog-fill" id="pebble-fill"></div></div></div></div>
+    <div class="date-line" id="pebble-date"></div>
+    <div class="trial-list" id="pebble-list"></div>
+    <div class="action-row">
+      <button class="print-btn" id="pebble-print">&#128438; Print Results</button>
+      <button class="reset-btn" id="pebble-reset">&#8635; New Session</button>
+    </div>
+  </div>
+</div>
